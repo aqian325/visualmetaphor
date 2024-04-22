@@ -1,0 +1,82 @@
+@font-face {
+  font-family: 'Gluten';
+  src: url('fonts/Gluten.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'GillSans';
+  src: url('fonts/GillSans.ttf') format('truetype');
+} 
+
+
+body {
+  margin: 0;
+  padding: 0;
+  /* background-image: url('/images/emptyroom.jpeg'); */
+  background-size: cover;
+  background-position: center;
+  font-family: 'Gluten', sans-serif;
+  color: black; /* Assuming white text for contrast */
+}
+.container {
+  text-align: center;
+}
+
+h1 {
+  font-size: 100px;
+  /* position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); */
+}
+
+h2 {
+  font-size: 40px;
+  font-family: GillSans;
+}
+
+
+button {
+  display: block;
+  margin: 0 auto;
+  margin-top: 20px; /* Adjust as needed */
+  padding: 10px 20px;
+  background-color: #aa7ea1; /* Change color as needed */
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+img {
+
+}
+
+/* Apply styles to the image to make it fill the whole window */
+.full-window-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensure the image covers the whole area while maintaining aspect ratio */
+  z-index: -1; /* Send the image behind other content */
+}
+
+/* CSS */
+/* First image class */
+.full-window-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+/* Second image class */
+.half-window-image {
+  width: 80%; /* Adjust as needed */
+  max-width: 800px; /* Adjust as needed */
+}
