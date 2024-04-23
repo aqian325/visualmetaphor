@@ -21,7 +21,7 @@ function setup() {
     input.input(drawCirclesFromInput);
 
     // Set an initial value for demonstration purposes
-    input.value("input your favorite lines of poetry here. each new line is a new visual element.");
+    input.value("input your favorite lines of poetry here. this is purely for illustrative purposes; each letter will be converted into a number, and each new line is a new visual element.");
 
     // Call the drawing function initially
     drawCirclesFromInput();
