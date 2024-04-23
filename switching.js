@@ -1,31 +1,47 @@
-// Define an array containing the paths to your sketch files.
-const sketchFiles = ['sketch1.js', 'sketch2.js', 'sketch3.js', 'sketch4.js', 'sketch5.js', 'sketch6.js'];
-let currentSketchIndex = 0;
+let currentSketch = 1;
 
-// Function to switch between sketches
-function switchSketch() {
-    // Remove the current sketch script if it exists.
-    const existingScript = document.getElementById('sketchScript');
-    if (existingScript) {
-        existingScript.remove();
-    }
+function setup() {
+    createCanvas(1500, 800);
+    background(200);
 
-    // Create a new script element for the next sketch.
-    const scriptTag = document.createElement('script');
-    scriptTag.id = 'sketchScript';
-    scriptTag.src = sketchFiles[currentSketchIndex];
-    scriptTag.onload = function() {
-        console.log('Successfully loaded script: ' + scriptTag.src);
-    };
+    // Create a button element and place it beneath the canvas.
+    let btn = createButton('Change Sketch');
+    btn.position(0, 100);
 
-    document.body.appendChild(scriptTag);
+    // Call changeSketch() when the button is pressed.
+    btn.mousePressed(changeSketch);
 
-    // Update the index to point to the next sketch in the array, cycling back to the start if necessary.
-    currentSketchIndex = (currentSketchIndex + 1) % sketchFiles.length;
+    // Describe the sketch
 }
 
-// Attach the switchSketch function to a button click event.
-document.querySelector('button').addEventListener('click', switchSketch);
+// Toggle between different sketches
+function changeSketch() {
+    currentSketch++;
+    if (currentSketch > 6) {
+        currentSketch = 1; // Reset to first sketch
+    }
 
-// Load the first sketch when the page loads.
-window.onload = switchSketch;
+    // Call the appropriate sketch based on the currentSketch value
+    switch (currentSketch) {
+        case 1:
+            sketch1();
+            break;
+        case 2:
+            sketch2();
+            break;
+        case 3:
+            sketch3();
+            break;
+        case 4:
+            sketch4();
+            break;
+        case 5:
+            sketch5();
+            break;            
+        case 6:
+            sketch6();
+            break;  
+        default:
+            break;
+    }
+}
