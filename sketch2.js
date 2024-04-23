@@ -5,20 +5,20 @@ const maxSpeed = 2; // Maximum speed of circles
 const tetherStrength = 0.02; // Strength of tethering force
 
 function setup() {
-    createCanvas(1500, 600);
+    createCanvas(1500, 800);
     background(0);
     
     // Create a textarea for user input
     input = createElement('textarea', '');
     input.style('width', '500px');
-    input.style('height', '100px');
+    input.style('height', '150px');
     input.style('border-radius', '15px');
     input.style('padding', '20px');
-    input.position(700, height - 100);
+    input.position(800, 60);
     input.input(drawCirclesFromInput);
 
     // Set an initial value for demonstration purposes
-    input.value("input your favorite lines of poetry here. each new line is a new line.");
+    input.value("input your favorite lines of poetry here. each new line is a new visual element.");
 
     // Call the drawing function initially
     drawCirclesFromInput();
