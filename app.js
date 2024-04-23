@@ -12,13 +12,12 @@ app.use(express.static('public'));
 app.post('/submit', (req, res) => {
     const inputText = req.body.inputText;
     const translatedText = lettersToNumbers(inputText);
-    res.send(`
-        <h1>Visual Metaphor Machine</h1>
-        <p>You entered: ${inputText}</p>
-        <p>Translated to numbers: ${translatedText}</p>
-        <a href="/">Try another</a>
-    `);
+    res.json({
+        original: inputText,
+        translated: translatedText
+    });
 });
+
 
 // Function to convert letters to their numeric position in the alphabet
 function lettersToNumbers(input) {
