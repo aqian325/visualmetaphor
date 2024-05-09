@@ -21,6 +21,7 @@ function setup() {
     // Initialize simulation
     circleGroup = new Group(); // Initialize circleGroup as a Group
     initSimulation();
+	mouse.visible = false;
 }
 
 function setupUI() {
