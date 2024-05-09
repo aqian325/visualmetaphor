@@ -175,7 +175,7 @@ h4 {
   font-size: 80px; /* Adjust size if it's too large for the viewport */
   color: white;
   margin: 0px 50px 0px 50px; /* Reduced or adjust top/bottom margin */
-  padding: 0px;
+  padding: 50px 50px 0 150px;
 } 
 
 /* Styling for button */
