@@ -10,7 +10,7 @@ function setup() {
     createCanvas(500, 500);
     angleMode(DEGREES);
     world.gravity.y = 0;
-    frameRate = 2; // trying to slow this down, didnt work
+    // frameRate = 2; // trying to slow this down, didnt work
 
     // Labels and Sliders
     createP('number of sprites (8 to 50):').position(655, 480);
