@@ -70,10 +70,10 @@ function initSimulation() {
 
 function draw() {
     background(0);
-    // if (numOfSpritesSlider.value() !== circleGroup.length || radiusSlider.value() !== circleGroup[0].radius) {
-    //     background(0);
-    //     initSimulation(); // Reinitialize simulation if sliders change
-    // }
+    if (numOfSpritesSlider.value() !== circleGroup.length || radiusSlider.value() !== circleGroup[0].radius) {
+        clear();
+        initSimulation(); // Reinitialize simulation if sliders change
+    }
 
 
     let noNo = noise(noNoSlider.value());
@@ -82,7 +82,7 @@ function draw() {
 
     // Animate and draw sprites
     for (let i = 0; i < circleGroup.length; i++) {
-        let angle = frameCount * 2 + 360 / circleGroup.length * i * noNo;
+        let angle = frameCount * 2 + 360 / circleGroup.length * i;
         circleGroup[i].position.x = width / 2 + cos(angle) * (20 + sin(frameCount * 0.7 * noNoX) * 15);
         circleGroup[i].position.y = height / 2 + sin(angle) * (20 + sin(frameCount * 0.7 * noNoY) * 15);
         drawSprite(circleGroup[i]);
