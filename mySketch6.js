@@ -14,11 +14,11 @@ function setup() {
 
     // Labels and Sliders
     createP('number of sprites (8 to 50):').position(655, 480);
-    numOfSpritesSlider = createSlider(8, 50, 8);
+    numOfSpritesSlider = createSlider(8, 50, 8,1);
     numOfSpritesSlider.position(700, 500);
 
     createP('radius of sprite + movement (10 to 60):').position(655, 550);
-    radiusSlider = createSlider(10, 60, 10);
+    radiusSlider = createSlider(10, 60, 10,5);
     radiusSlider.position(700, 570);
 
     createP('angle between sprites (mult denom. factor of 0 to 2):').position(655, 620);
@@ -32,6 +32,10 @@ function setup() {
     createP('noise y (0 to 2):').position(655, 760);
     noNoYSlider = createSlider(0, 2, 1, 0.01);
     noNoYSlider.position(700, 780);
+
+    createP('springiness (0.1 to 1):').position(655, 830);
+    springSlider = createSlider(0.1, 1, 1, 0.1);
+    springSlider.position(700, 850);
 
     initSimulation();
 }
@@ -55,8 +59,9 @@ function initSimulation() {
     // Connect each sprite with every other sprite exactly once
     for (let i = 0; i < circleGroup.length; i++) {
         for (let j = i + 1; j < circleGroup.length; j++) {
+            let springiness = springSlider.value();
             let joint = new DistanceJoint(circleGroup[i], circleGroup[j]);
-            joint.springiness = 0.2;
+            joint.springiness = springiness;
             joints.push(joint);
         }
     }
@@ -65,10 +70,10 @@ function initSimulation() {
 
 function draw() {
     background(0);
-    if (numOfSpritesSlider.value() !== circleGroup.length || radiusSlider.value() !== circleGroup[0].radius) {
-        background(0);
-        initSimulation(); // Reinitialize simulation if sliders change
-    }
+    // if (numOfSpritesSlider.value() !== circleGroup.length || radiusSlider.value() !== circleGroup[0].radius) {
+    //     background(0);
+    //     initSimulation(); // Reinitialize simulation if sliders change
+    // }
 
 
     let noNo = noise(noNoSlider.value());
