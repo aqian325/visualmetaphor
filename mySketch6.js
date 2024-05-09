@@ -40,24 +40,25 @@ function setupUI() {
     noNoSlider.position(700, 640);
     noNoSlider.input(changeSlider);
 
-    createP('Noise X (0 to 2):').position(655, 690);
-    noNoXSlider = createSlider(0, 2, 1, 0.01);
-    noNoXSlider.position(700, 710);
-    noNoXSlider.input(changeSlider);
+    // createP('Noise X (0 to 2):').position(655, 690);
+    // noNoXSlider = createSlider(0, 2, 1, 0.01);
+    // noNoXSlider.position(700, 710);
+    // noNoXSlider.input(changeSlider);
 
-    createP('Noise Y (0 to 2):').position(655, 760);
-    noNoYSlider = createSlider(0, 2, 1, 0.01);
-    noNoYSlider.position(700, 780);
-    noNoYSlider.input(changeSlider);
+    // createP('Noise Y (0 to 2):').position(655, 760);
+    // noNoYSlider = createSlider(0, 2, 1, 0.01);
+    // noNoYSlider.position(700, 780);
+    // noNoYSlider.input(changeSlider);
 
-    createP('Springiness (0.1 to 1):').position(655, 830);
+    createP('Springiness (0.1 to 1):').position(655, 690);
     springSlider = createSlider(0.1, 1, 0.5, 0.01); // Adjusted default and step
-    springSlider.position(700, 850);
+    springSlider.position(700, 710);
     springSlider.input(changeSlider);
 }
 
 function initSimulation() {
-    circleGroup.forEach(s => s.remove()); // Remove all sprites from group
+    circleGroup.forEach(s => s.remove());
+    console.log(circleGroup.length);
     joints.forEach(j => j.remove()); // Remove all joints
     joints = [];
     
@@ -76,14 +77,17 @@ function initSimulation() {
     };
     circleGroup.add(centerSprite);
 
-    // Create the edge sprites
+    // Calculate the angle between each sprite
+    let angleIncrement = 360 / (numOfSprites - 1);
+
+    // Create the edge sprites positioned on the circumference of a circle
     for (let i = 0; i < numOfSprites - 1; i++) {
-        let angle = TWO_PI / (numOfSprites - 1) * i; // TWO_PI represents a full circle in radians
-        let x = width / 2 + cos(angle) * radius;
-        let y = height / 2 + sin(angle) * radius;
+        let angle = angleIncrement * i;
+        let x = centerSprite.x + cos(angle) * radius;
+        let y = centerSprite.y + sin(angle) * radius;
         let edgeSprite = new circleGroup.Sprite(x, y, radius);
         edgeSprite.draw = function() {
-            fill(255, 0, 0); // Color for the edge sprites
+            fill(255, 0, 0);
             noStroke();
             ellipse(0, 0, this.diameter, this.diameter);
         };
@@ -93,7 +97,8 @@ function initSimulation() {
     // Connect each edge sprite with adjacent edge sprites and the center sprite
     for (let i = 1; i < circleGroup.length; i++) {
         let centerJoint = new DistanceJoint(centerSprite, circleGroup[i]);
-        centerJoint.springiness = springSlider.value(); // Use the springiness slider value
+        // centerJoint.springiness = springSlider.value(); // Use the springiness slider value
+        centerJoint.springiness = 0.1; // Use the springiness slider value
         centerJoint.draw = function() {
             stroke(0, 255, 0);
             line(this.spriteA.x, this.spriteA.y, this.spriteB.x, this.spriteB.y);
@@ -102,11 +107,12 @@ function initSimulation() {
 
         let nextIndex = i + 1 < circleGroup.length ? i + 1 : 1; // Wrap around to the first edge sprite
         let edgeJoint = new DistanceJoint(circleGroup[i], circleGroup[nextIndex]);
-        edgeJoint.springiness = springSlider.value() * 0.1; // Reduced springiness for edge connections
+        edgeJoint.springiness = springSlider.value() * 0.01; // Reduced springiness for edge connections
         edgeJoint.draw = function() {
             stroke(255, 255, 255);
             line(this.spriteA.x, this.spriteA.y, this.spriteB.x, this.spriteB.y);
         };
+        
         joints.push(edgeJoint);
     }
 
@@ -114,7 +120,8 @@ function initSimulation() {
     let lastEdgeSprite = circleGroup[circleGroup.length - 1];
     let firstEdgeSprite = circleGroup[1];
     let finalJoint = new DistanceJoint(lastEdgeSprite, firstEdgeSprite);
-    finalJoint.springiness = springSlider.value() * 0.1;
+    // finalJoint.springiness = springSlider.value() * 0.1;
+    finalJoint.springiness = 0;
     finalJoint.draw = function() {
         stroke(255, 255, 255);
         line(this.spriteA.x, this.spriteA.y, this.spriteB.x, this.spriteB.y);
@@ -134,8 +141,8 @@ function draw() {
     // Optional: Move the center sprite towards the mouse cursor
     circleGroup[0].moveTowards(mouse, 0.2); // Assuming moveTowards is correctly implemented
 
-    // Apply noise-based movement (This section might need your specific logic adjustment)
-    let noNo = noise(noNoSlider.value());
-    let noNoX = noise(noNoXSlider.value());
-    let noNoY = noise(noNoYSlider.value());
+    // // Apply noise-based movement (This section might need your specific logic adjustment)
+    // let noNo = noise(noNoSlider.value());
+    // let noNoX = noise(noNoXSlider.value());
+    // let noNoY = noise(noNoYSlider.value());
 }
