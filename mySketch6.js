@@ -1,107 +1,141 @@
 let numOfSpritesSlider, radiusSlider;
 let noNoSlider, noNoXSlider, noNoYSlider;
-let circleGroup = [];
+let circleGroup; // Changed from array to Group object
 let joints = [];
 let prevNumOfSprites = 0; // To track changes in number of sprites
-// let fill = (255, 204, 0); // Yellow color fill
 
+let refresh = false;
+
+function changeSlider() {
+    refresh = true;
+}
 
 function setup() {
     createCanvas(500, 500);
     angleMode(DEGREES);
     world.gravity.y = 0;
-    // frameRate = 2; // trying to slow this down, didnt work
 
-    // Labels and Sliders
-    createP('number of sprites (8 to 50):').position(655, 480);
-    numOfSpritesSlider = createSlider(8, 50, 8,1);
-    numOfSpritesSlider.position(700, 500);
+    // Setup UI elements
+    setupUI();
 
-    createP('radius of sprite + movement (10 to 60):').position(655, 550);
-    radiusSlider = createSlider(10, 60, 10,5);
-    radiusSlider.position(700, 570);
-
-    createP('angle between sprites (mult denom. factor of 0 to 2):').position(655, 620);
-    noNoSlider = createSlider(0, 2, 1, 0.01);
-    noNoSlider.position(700, 640);
-
-    createP('noise x (0 to 2):').position(655, 690);
-    noNoXSlider = createSlider(0, 2, 1, 0.01);
-    noNoXSlider.position(700, 710);
-
-    createP('noise y (0 to 2):').position(655, 760);
-    noNoYSlider = createSlider(0, 2, 1, 0.01);
-    noNoYSlider.position(700, 780);
-
-    createP('springiness (0.1 to 1):').position(655, 830);
-    springSlider = createSlider(0.1, 1, 1, 0.1);
-    springSlider.position(700, 850);
-
+    // Initialize simulation
+    circleGroup = new Group(); // Initialize circleGroup as a Group
     initSimulation();
 }
 
+function setupUI() {
+    // Simplified and organized UI setup
+    createP('Number of sprites (8 to 50):').position(655, 480);
+    numOfSpritesSlider = createSlider(8, 50, 8, 1);
+    numOfSpritesSlider.position(700, 500);
+    numOfSpritesSlider.input(changeSlider); // Simplified event listener setup
+
+    createP('Radius of sprite + movement (10 to 60):').position(655, 550);
+    radiusSlider = createSlider(10, 60, 10, 5);
+    radiusSlider.position(700, 570);
+    radiusSlider.input(changeSlider);
+
+    createP('Angle between sprites (mult denom. factor of 0 to 2):').position(655, 620);
+    noNoSlider = createSlider(0, 2, 1, 0.01);
+    noNoSlider.position(700, 640);
+    noNoSlider.input(changeSlider);
+
+    createP('Noise X (0 to 2):').position(655, 690);
+    noNoXSlider = createSlider(0, 2, 1, 0.01);
+    noNoXSlider.position(700, 710);
+    noNoXSlider.input(changeSlider);
+
+    createP('Noise Y (0 to 2):').position(655, 760);
+    noNoYSlider = createSlider(0, 2, 1, 0.01);
+    noNoYSlider.position(700, 780);
+    noNoYSlider.input(changeSlider);
+
+    createP('Springiness (0.1 to 1):').position(655, 830);
+    springSlider = createSlider(0.1, 1, 0.5, 0.01); // Adjusted default and step
+    springSlider.position(700, 850);
+    springSlider.input(changeSlider);
+}
+
 function initSimulation() {
-    circleGroup = [];
+    circleGroup.forEach(s => s.remove()); // Remove all sprites from group
+    joints.forEach(j => j.remove()); // Remove all joints
     joints = [];
+    
     let numOfSprites = numOfSpritesSlider.value();
     let radius = radiusSlider.value();
 
-    // Create a cluster of sprites
-    for (let i = 0; i < numOfSprites; i++) {
-        let angle = 360 / numOfSprites * i;
+    // Reinitialize group
+    circleGroup = new Group();
+
+    // Create the center sprite and add to the group
+    const centerSprite = new circleGroup.Sprite(width / 2, height / 2, 2*radius);
+    centerSprite.draw = function() {
+        fill(255, 0, 0); // Color for the center sprite
+        noStroke();
+        ellipse(0, 0, this.diameter, this.diameter);
+    };
+    circleGroup.add(centerSprite);
+
+    // Create the edge sprites
+    for (let i = 0; i < numOfSprites - 1; i++) {
+        let angle = TWO_PI / (numOfSprites - 1) * i; // TWO_PI represents a full circle in radians
         let x = width / 2 + cos(angle) * radius;
         let y = height / 2 + sin(angle) * radius;
-        let circle = new Sprite(x, y, radius); // Assuming Sprite takes x, y, diameter
-        circle.color=color(255, 204, 0);
-        circleGroup.push(circle);
+        let edgeSprite = new circleGroup.Sprite(x, y, radius);
+        edgeSprite.draw = function() {
+            fill(255, 0, 0); // Color for the edge sprites
+            noStroke();
+            ellipse(0, 0, this.diameter, this.diameter);
+        };
+        circleGroup.add(edgeSprite);
     }
 
-    // Connect each sprite with every other sprite exactly once
-    for (let i = 0; i < circleGroup.length; i++) {
-        for (let j = i + 1; j < circleGroup.length; j++) {
-            let springiness = springSlider.value();
-            let joint = new DistanceJoint(circleGroup[i], circleGroup[j]);
-            joint.springiness = springiness;
-            joints.push(joint);
-        }
+    // Connect each edge sprite with adjacent edge sprites and the center sprite
+    for (let i = 1; i < circleGroup.length; i++) {
+        let centerJoint = new DistanceJoint(centerSprite, circleGroup[i]);
+        centerJoint.springiness = springSlider.value(); // Use the springiness slider value
+        centerJoint.draw = function() {
+            stroke(0, 255, 0);
+            line(this.spriteA.x, this.spriteA.y, this.spriteB.x, this.spriteB.y);
+        };
+        joints.push(centerJoint);
+
+        let nextIndex = i + 1 < circleGroup.length ? i + 1 : 1; // Wrap around to the first edge sprite
+        let edgeJoint = new DistanceJoint(circleGroup[i], circleGroup[nextIndex]);
+        edgeJoint.springiness = springSlider.value() * 0.1; // Reduced springiness for edge connections
+        edgeJoint.draw = function() {
+            stroke(255, 255, 255);
+            line(this.spriteA.x, this.spriteA.y, this.spriteB.x, this.spriteB.y);
+        };
+        joints.push(edgeJoint);
     }
 
+    // Connect the first edge sprite (index 1) with the last edge sprite
+    let lastEdgeSprite = circleGroup[circleGroup.length - 1];
+    let firstEdgeSprite = circleGroup[1];
+    let finalJoint = new DistanceJoint(lastEdgeSprite, firstEdgeSprite);
+    finalJoint.springiness = springSlider.value() * 0.1;
+    finalJoint.draw = function() {
+        stroke(255, 255, 255);
+        line(this.spriteA.x, this.spriteA.y, this.spriteB.x, this.spriteB.y);
+    };
+    joints.push(finalJoint);
 }
+
+
 
 function draw() {
     background(0);
-    if (numOfSpritesSlider.value() !== circleGroup.length || radiusSlider.value() !== circleGroup[0].radius) {
-        clear();
+    if (refresh) {
         initSimulation(); // Reinitialize simulation if sliders change
+        refresh = false;
     }
 
+    // Optional: Move the center sprite towards the mouse cursor
+    circleGroup[0].moveTowards(mouse, 0.2); // Assuming moveTowards is correctly implemented
 
+    // Apply noise-based movement (This section might need your specific logic adjustment)
     let noNo = noise(noNoSlider.value());
     let noNoX = noise(noNoXSlider.value());
     let noNoY = noise(noNoYSlider.value());
-
-    // Animate and draw sprites
-    for (let i = 0; i < circleGroup.length; i++) {
-        let angle = frameCount * 2 + 360 / circleGroup.length * i;
-        circleGroup[i].position.x = width / 2 + cos(angle) * (20 + sin(frameCount * 0.7 * noNoX) * 15);
-        circleGroup[i].position.y = height / 2 + sin(angle) * (20 + sin(frameCount * 0.7 * noNoY) * 15);
-        drawSprite(circleGroup[i]);
-    }
-
-    // Optionally draw joints if needed
-    joints.forEach(joint => {
-        drawJoint(joint);
-    });
-}
-
-function drawSprite(sprite) {
-    fill(255, 204, 0); // Yellow color fill
-    noStroke(); // Ensure no outline
-    ellipse(sprite.position.x, sprite.position.y, sprite.diameter, sprite.diameter);
-}
-
-function drawJoint(joint) {
-    stroke(255,40); // White color for the joint lines
-    // noStroke();
-    line(joint.spriteA.position.x, joint.spriteA.position.y, joint.spriteB.position.x, joint.spriteB.position.y);
 }
