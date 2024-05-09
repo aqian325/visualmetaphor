@@ -2,7 +2,7 @@ let input;
 let bezierCurves = [];
 
 function setup() {
-    createCanvas(1500, 800);
+    createCanvas(300, 300);
     background(0);
 
     // Create a textarea for user input
@@ -90,4 +90,7 @@ function convertLettersToNumbers(input) {
         }
         return '0'; // Non-alphabet characters converted to '0'
     }).join(' ');
+}
+function sketch3Update(data) {
+    // Update the visualization based on the input data
 }

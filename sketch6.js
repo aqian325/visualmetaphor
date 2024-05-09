@@ -8,7 +8,7 @@ let lineIndex = 0; // Variable to keep track of the current line being processed
 let circleIndex = 0; // Variable to keep track of the current circle being processed
 
 function setup() {
-    createCanvas(1500, 800);
+    createCanvas(300, 300);
     background(0);
     
     // Create a textarea for user input
@@ -94,4 +94,7 @@ function drawCirclesFromInput() {
         lines.push(line);
         yPos += 100; // Move to the next line
     }
+}
+function sketch6Update(data) {
+    // Update the visualization based on the input data
 }

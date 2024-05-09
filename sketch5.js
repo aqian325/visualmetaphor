@@ -5,7 +5,7 @@ const maxSpeed = 2; // Maximum speed of circles
 const tetherStrength = 0.5; // Strength of tethering force
 
 function setup() {
-    createCanvas(1500, 800);
+    createCanvas(300, 300);
     background(0);
     
     // Create a textarea for user input
@@ -101,4 +101,7 @@ function convertLettersToNumbers(input) {
         }
         return '0'; // Non-alphabet characters converted to '0'
     }).join(' ');
+}
+function sketch5Update(data) {
+    // Update the visualization based on the input data
 }

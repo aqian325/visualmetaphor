@@ -1,3 +1,4 @@
+/* Define fonts */
 @font-face {
   font-family: 'Gluten';
   src: url('fonts/Gluten.ttf') format('truetype');
@@ -8,35 +9,137 @@
   src: url('fonts/GillSans.ttf') format('truetype');
 } 
 
-
+/* Body styling */
 body {
-  margin: 0;
+  margin: 50px;
   padding: 0;
   background-size: cover;
   background-position: center;
   font-family: 'Gluten', sans-serif;
   background-color: black;
   color: white;
-  height: 100vh;
+  /* height: 100vh; */
   display: flex;
   flex-direction: column;
   align-items: left;
   justify-content: center;
 }
 
-h1 {
-  font-size: 100px; /* Adjust size as needed */
+.container {
+  margin: 10px;
+  overflow: visible; /* Make overflow visible to show all content */
+  overflow-y: visible; /* Make overflow visible to show all content */
+
+}
+
+/* Container for sketches */
+.sketch-container {
+  position: relative;
+  width: 10px;
+  height: 200px;
+  margin: 0;
+  display: inline-block;
+}
+
+/* Grid container */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 320px);
+  grid-template-rows: repeat(3, 320px);
+  gap: 20px;
+  margin: 10px 0 0 700px;
+}
+
+/* Styling for grid items */
+.grid-item {
+  background-color: #000000;
+  border: 2px dashed #505050;
+}
+
+/* Styling for visual metaphor of axes */
+.axes-class {
+  position: absolute;
+  top: 60%;
+  left: 67%;
+  transform: translate(-50%, -50%);
+  width: 1000px;
+  height: 1020px;
+}
+
+.axis {
+  position: absolute;
+  width: 2px;
+  height: 100%;
+}
+
+.y-axis {
+  right: 0%;
+}
+
+.x-axis {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.axis-line {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 100%;
+  background-color: #505050;
+}
+
+.axis-label {
+  position: absolute;
+  font-family: 'GillSans', sans-serif;
   color: white;
-  margin: 150px auto -50px 150px;
+  font-size: 14px;
+  white-space: nowrap; /* Ensure labels don't wrap */
+}
+
+.y-axis .axis-label {
+  left: 15px;
+  top: 0%;
+  /* transform: translateY(-50%); */
+}
+
+.y-axis {
+  top: 120%;
+  transform: translateY(-90%);
+}
+
+/* Manually specify the position for x-axis labels */
+.x-axis .axis-label {
+  color: white;
+  font-size: 14px;
+  transform: translateY(525px) translateX(-450px) rotate(90deg);
+}
+
+
+.x-axis {
+  left: 45%;
+  transform: translateY(-75%) rotate(-90deg);
+}
+
+/* Styling for h1 */
+h1 {
+  font-size: 100px;
+  color: white;
+  margin: 50px 50px 50px 50px;
   padding: 0;
 }
 
+/* Styling for p */
 p {
-  font-size: 16px; /* Adjust size as needed */
+  font-size: 16px;
   color: white;
-  padding: 50px 100px 0 150px;
+  margin: 0px 50px 0px 50px;
+  padding: 0;
 }
 
+/* Styling for form */
 #textForm {
   width: 100%;
   display: flex;
@@ -45,44 +148,45 @@ p {
 }
 
 input[type="text"] {
-  width: 30%; /* Adjust width to your preference */
-  padding: 1em; /* Increases padding to make the input box taller */
-  margin-top: 5vh; /* Moves the input box down relative to the viewport height */
-  border-radius: 20px; /* Adds rounded corners */
-  border: none; /* Removes the default border */
-  font-size: 1.2em; /* Increase font size for better readability */
+  width: 30%;
+  padding: 1em;
+  margin-top: 5vh;
+  border-radius: 20px;
+  border: none;
+  font-size: 1.2em;
 }
 
 button {
-  margin: -20px auto 0 auto; /* Adjust the top margin */
+  margin: -20px auto 0 auto;
   font-size: 2em;
-  border-radius: 20px; /* Rounded corners for consistency */
+  border-radius: 20px;
   background-color: #ffffff;
   color: #000000;
   cursor: pointer;
-  position: relative;
-  top: -90px;
-  left: -120px;
 }
 
+/* Styling for h2 */
 h2 {
   font-size: 40px;
   font-family: GillSans;
 }
 
+h4 {
+  font-size: 80px; /* Adjust size if it's too large for the viewport */
+  color: white;
+  margin: 0px 50px; /* Reduced or adjust top/bottom margin */
+  padding: 0;
+}
 
+/* Styling for button */
 button {
   display: block;
   margin: 0 auto;
-  margin-top: 20px; /* Adjust as needed */
+  margin-top: 20px;
   padding: 10px 20px;
-  background-color: #ffffff; /* Change color as needed */
+  background-color: #ffffff;
   color: rgb(0, 0, 0);
   border: none;
   border-radius: 20px;
   cursor: pointer;
 }
-
-
-
-
