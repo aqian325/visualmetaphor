@@ -4,6 +4,8 @@ let circleGroup; // Changed from array to Group object
 let joints = [];
 let prevNumOfSprites = 0; // To track changes in number of sprites
 let floor, ceiling, leftWall, rightWall;
+let joy;
+let joyfulSprites;
 
 let refresh = false;
 
@@ -28,14 +30,14 @@ function setup() {
 	floor.y = height;
 	floor.w = width;
 	floor.h = 0.1;
-    floor.color = 'invisible';
+    floor.stroke = 'black';
 	floor.collider = 'static';
 
     ceiling = new Sprite();
 	ceiling.y = 0;
 	ceiling.w = width;
 	ceiling.h = 0;
-    ceiling.color = 'black';
+    ceiling.stroke = 'black';
 	ceiling.collider = 'static';
     ceiling.bounciness=0.4;
 
@@ -43,29 +45,53 @@ function setup() {
 	leftWall.x = 0;
 	leftWall.w = 0;
 	leftWall.h = height;
-    leftWall.color = 'black';
+    leftWall.stroke = 'black';
 	leftWall.collider = 'static';
 
     rightWall = new Sprite();
 	rightWall.x = 1800;
 	rightWall.w = 0;
 	rightWall.h = height;
-    rightWall.color = 'black';
+    // rightWall.color = 'pink';
+    rightWall.stroke = 'black';
 	rightWall.collider = 'static';
+
+
+    joy = new Sprite();
+    joy.x = 900;
+    joy.y = 100;
+    joy.d=50;
+    // joy.w=60;
+    // joy.w = 50;
+    // joy.h = 50;
+    joy.collider = 'dynamic';
+    joy.color = 'yellow';
+    joy.stroke = 'yellow';
+    joy.text = '  joy';
+    joy.textSize = 20;
+    joy.speed = 0.01;
+    joy.bounciness = 1;
+    joy.addCollider(3, 0, 50);
+    joy.addCollider(5, 0, 50);
+    joy.addCollider(7, 0, 50);
+
+	
+    circleGroup.overlaps(joy, poof);
+
 }
 
 function setupUI() {
     let sliderX = 800;
     let sliderTextX = sliderX+45;
-    let sliderYStart = 380
+    let sliderYStart = 200
 
     // Simplified and organized UI setup
-    createP('Number of sprites (8 to 100):').position(sliderX, sliderYStart);
+    createP('sprite population (8 to 100):').position(sliderX, sliderYStart);
     numOfSpritesSlider = createSlider(8, 100, 20, 1);
     numOfSpritesSlider.position(sliderTextX, sliderYStart+20);
     numOfSpritesSlider.input(changeSlider); // Simplified event listener setup
 
-    createP('Radius of sprite (10 to 60):').position(sliderX, sliderYStart+60);
+    createP('sprite size (10 to 60):').position(sliderX, sliderYStart+60);
     radiusSlider = createSlider(10, 60, 30, 5);
     radiusSlider.position(sliderTextX, sliderYStart+80);
     radiusSlider.input(changeSlider);
@@ -122,6 +148,7 @@ function initSimulation() {
         noStroke();
         ellipse(0, 0, this.diameter+(0.5*this.speed), this.diameter+(0.5*this.speed));
     };
+    centerSprite.speed = 0.3;
     circleGroup.add(centerSprite);
 
     // Calculate the angle between each sprite
@@ -151,7 +178,8 @@ function initSimulation() {
         // centerJoint.springiness = springSlider.value(); // Use the springiness slider value
         centerJoint.springiness = 0.08; // Use the springiness slider value
         centerJoint.draw = function() {
-            stroke(0, 255, 0);
+            // stroke(0, 255, 0);
+            noStroke();
             line(this.spriteA.x, this.spriteA.y, this.spriteB.x, this.spriteB.y);
         };
         joints.push(centerJoint);
@@ -160,7 +188,8 @@ function initSimulation() {
         let edgeJoint = new DistanceJoint(circleGroup[i], circleGroup[nextIndex]);
         edgeJoint.springiness = 1; // Reduced springiness for edge connections
         edgeJoint.draw = function() {
-            stroke(255, 255, 255);
+            // stroke(255, 255, 255);
+            noStroke();
             line(this.spriteA.x, this.spriteA.y, this.spriteB.x, this.spriteB.y);
         };
         
@@ -174,7 +203,8 @@ function initSimulation() {
     // finalJoint.springiness = springSlider.value() * 0.1;
     finalJoint.springiness = 1;
     finalJoint.draw = function() {
-        stroke(255, 255, 255);
+        // stroke(255, 255, 255);
+        noStroke();
         line(this.spriteA.x, this.spriteA.y, this.spriteB.x, this.spriteB.y);
     };
     joints.push(finalJoint);
@@ -183,6 +213,8 @@ function initSimulation() {
 		edgeSprite.overlaps(centerSprite);
 		centerSprite.color = 'purple';
 	} //didnt work
+
+
 }
 
 
@@ -200,6 +232,8 @@ function draw() {
         point(px, py);
       }
     
+    joy.draw();
+
     // Optional: Move the center sprite towards the mouse cursor
 
     circleGroup[0].moveTowards(mouse, 0.07); // Assuming moveTowards is correctly implemented
@@ -238,3 +272,15 @@ function draw() {
             sprite.moveAway(sprite.x, 0, repelStrength); // Move away from bottom edge
         }
     }
+
+
+function poof(circleGroup,joy) {
+    joyfulSprites = new Group();
+    joyfulSprites.draw();
+    joyfulSprites.x=circleGroup.x;
+    joyfulSprites.y=circleGroup.y;
+    joyfulSprites.diameter = 10;
+    joyfulSprites.amount = 1;
+    joyfulSprites.life = random(0,30);
+    joyfulSprites.color = "pink";
+}
