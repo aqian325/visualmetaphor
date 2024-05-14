@@ -72,10 +72,9 @@ function setup() {
     joy.speed = 0.01;
     joy.bounciness = 1;
     joy.addCollider(3, 0, 50);
-    joy.addCollider(5, 0, 50);
-    joy.addCollider(7, 0, 50);
+    joy.addCollider(0, 0, 70, 50);
+    joy.addCollider(8, 0, 50);
 
-	
     circleGroup.overlaps(joy, poof);
 
 }
