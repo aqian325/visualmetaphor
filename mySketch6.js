@@ -65,8 +65,8 @@ function setup() {
     // joy.w = 50;
     // joy.h = 50;
     joy.collider = 'dynamic';
-    joy.color = 'yellow';
-    joy.stroke = 'yellow';
+    joy.color = '#f7e688';
+    joy.stroke = '#f7e688';
     joy.text = '  joy';
     joy.textSize = 20;
     joy.speed = 0.01;
