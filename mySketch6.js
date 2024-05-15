@@ -7,12 +7,12 @@ let floor, ceiling, leftWall, rightWall;
 let joy;
 let joyfulSprites;
 
-
 let joySound;
+
 function preload() {
 	joySound = loadSound("assets/bubble.wav");
+    //source: https://mixkit.co/free-sound-effects/bubbles/
 }
-
 
 let refresh = false;
 
@@ -33,6 +33,7 @@ function setup() {
     initSimulation();
 	mouse.visible = false;
 
+    //building walls :(
     floor = new Sprite();
 	floor.y = height;
 	floor.w = width;
@@ -64,6 +65,7 @@ function setup() {
 	rightWall.collider = 'static';
 
 
+    //creating joy ! 
     joy = new Sprite();
     joy.x = 900;
     joy.y = 100;
@@ -82,13 +84,13 @@ function setup() {
     joy.addCollider(8, 0, 40);
     // joy.addCollider(-20, 0, 40);
 
-
-
+    //calling poof interaction
     circleGroup.overlaps(joy, poof);
 
 }
 
 function setupUI() {
+    //creating sliders
     let sliderX = 800;
     let sliderTextX = sliderX+45;
     let sliderYStart = 200
@@ -104,6 +106,8 @@ function setupUI() {
     radiusSlider.position(sliderTextX, sliderYStart+80);
     radiusSlider.input(changeSlider);
 
+    //no longer needed
+    
     // createP('Springiness (0.1 to 1):').position(sliderX, sliderYStart+120);
     // springSlider = createSlider(0.1, 1, 0.5, 0.01); // Adjusted default and step
     // springSlider.position(sliderTextX, sliderYStart+140);
@@ -135,16 +139,13 @@ function initSimulation() {
     
     let numOfSprites = numOfSpritesSlider.value();
     let radius = radiusSlider.value();
+
+    //setting up color based on location
     let colorLeft = color(245, 198, 201); // Pale pink
     let colorRight = color(208, 234, 242); // Pale blue
-
-    // Calculate interpolation factor based on x position
-
  
     // Reinitialize group
     circleGroup = new Group();
-
-
 
     // Create the center sprite and add to the group
     const centerSprite = new circleGroup.Sprite(width / 2, height / 2, radius);
@@ -161,6 +162,7 @@ function initSimulation() {
 
     // Calculate the angle between each sprite
     let angleIncrement = 360 / (numOfSprites - 1);
+        //not sure if needed
 
     // Create the edge sprites positioned on the circumference of a circle
     for (let i = 0; i < numOfSprites - 1; i++) {
@@ -184,7 +186,7 @@ function initSimulation() {
     for (let i = 1; i < circleGroup.length; i++) {
         let centerJoint = new DistanceJoint(centerSprite, circleGroup[i]);
         // centerJoint.springiness = springSlider.value(); // Use the springiness slider value
-        centerJoint.springiness = 0.08; // Use the springiness slider value
+        centerJoint.springiness = 0.08; // 0 = rigid
         centerJoint.draw = function() {
             // stroke(0, 255, 0);
             noStroke();
@@ -194,7 +196,7 @@ function initSimulation() {
 
         let nextIndex = i + 1 < circleGroup.length ? i + 1 : 1; // Wrap around to the first edge sprite
         let edgeJoint = new DistanceJoint(circleGroup[i], circleGroup[nextIndex]);
-        edgeJoint.springiness = 1; // Reduced springiness for edge connections
+        edgeJoint.springiness = 1; // boiinggg
         edgeJoint.draw = function() {
             // stroke(255, 255, 255);
             noStroke();
@@ -209,7 +211,7 @@ function initSimulation() {
     let firstEdgeSprite = circleGroup[1];
     let finalJoint = new DistanceJoint(lastEdgeSprite, firstEdgeSprite);
     // finalJoint.springiness = springSlider.value() * 0.1;
-    finalJoint.springiness = 1;
+    finalJoint.springiness = 1; //same springiness as other edges
     finalJoint.draw = function() {
         // stroke(255, 255, 255);
         noStroke();
@@ -220,7 +222,7 @@ function initSimulation() {
     if (kb.pressing('space')) {
 		edgeSprite.overlaps(centerSprite);
 		centerSprite.color = 'purple';
-	} //didnt work
+	} //tried to allow overlaps didnt work
 
 
 }
@@ -233,6 +235,8 @@ function draw() {
         initSimulation(); // Reinitialize simulation if sliders change
         refresh = false;
     }
+
+    //blinking old tv back drop
     for (let i = 0; i < width * height * 5 / 100; i++) {
         stroke(250, 250, 250, 40);
         let px = random(width);
@@ -240,19 +244,22 @@ function draw() {
         point(px, py);
       }
     
+    //didnt work
     joy.draw();
 
     // Optional: Move the center sprite towards the mouse cursor
 
     circleGroup[0].moveTowards(mouse, 0.07); // Assuming moveTowards is correctly implemented
     // circleGroup[0].attractTo(mouseX, mouseY, 400, 50, 5000);
+        //attractTo function too slow
 
-    circleGroup.forEach(sprite => {
+    // circleGroup.forEach(sprite => {
 
-        // Check and handle proximity to edges
-        // handleEdgeProximity(sprite);
+    //     // Check and handle proximity to edges
+    //     // handleEdgeProximity(sprite);
 
-    });
+    // });
+
 }
 
     // // Apply noise-based movement (This section might need your specific logic adjustment)
@@ -260,6 +267,7 @@ function draw() {
     // let noNoX = noise(noNoXSlider.value());
     // let noNoY = noise(noNoYSlider.value());
 
+    //didnt use this
     function handleEdgeProximity(sprite) {
         const edgePadding = 5;
         const repelStrength = 10;
@@ -281,7 +289,7 @@ function draw() {
         }
     }
 
-
+//poof
 function poof(circleGroup,joy) {
     joyfulSprites = new Group();
     joyfulSprites.draw();
@@ -292,5 +300,6 @@ function poof(circleGroup,joy) {
     joyfulSprites.life = random(0,30);
     joyfulSprites.color = "pink";
 
+    //play bubble sound
 	joySound.play();
 }
