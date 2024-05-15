@@ -7,6 +7,13 @@ let floor, ceiling, leftWall, rightWall;
 let joy;
 let joyfulSprites;
 
+
+let joySound;
+function preload() {
+	joySound = loadSound("assets/bubble.wav");
+}
+
+
 let refresh = false;
 
 function changeSlider() {
@@ -62,18 +69,20 @@ function setup() {
     joy.y = 100;
     joy.d=50;
     // joy.w=60;
-    // joy.w = 50;
-    // joy.h = 50;
+    joy.w = 40;
+    joy.h = 40;
     joy.collider = 'dynamic';
-    joy.color = 'yellow';
-    joy.stroke = 'yellow';
+    joy.color = '#f7e688';
+    joy.stroke = '#f7e688';
     joy.text = '  joy';
     joy.textSize = 20;
     joy.speed = 0.01;
     joy.bounciness = 1;
-    joy.addCollider(3, 0, 50);
-    joy.addCollider(0, 0, 70, 50);
-    joy.addCollider(8, 0, 50);
+    joy.addCollider(3, 0, 40);
+    joy.addCollider(8, 0, 40);
+    // joy.addCollider(-20, 0, 40);
+
+
 
     circleGroup.overlaps(joy, poof);
 
@@ -282,4 +291,6 @@ function poof(circleGroup,joy) {
     joyfulSprites.amount = 1;
     joyfulSprites.life = random(0,30);
     joyfulSprites.color = "pink";
+
+	joySound.play();
 }
