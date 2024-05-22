@@ -6,6 +6,7 @@ let prevNumOfSprites = 0; // To track changes in number of sprites
 let floor, ceiling, leftWall, rightWall;
 let joy;
 let joyfulSprites;
+let a;
 
 let joySound;
 
@@ -21,7 +22,7 @@ function changeSlider() {
 }
 
 function setup() {
-    createCanvas(1800, 600);
+    createCanvas(1000, 200);
     angleMode(DEGREES);
     world.gravity.y = 0;
 
@@ -49,37 +50,37 @@ function setup() {
 	ceiling.collider = 'static';
     ceiling.bounciness=0.4;
 
-    leftWall = new Sprite();
-	leftWall.x = 0;
-	leftWall.w = 0;
-	leftWall.h = height;
-    leftWall.stroke = 'black';
-	leftWall.collider = 'static';
+    // leftWall = new Sprite();
+	// leftWall.x = 0;
+	// leftWall.w = 0;
+	// leftWall.h = height;
+    // leftWall.stroke = 'black';
+	// leftWall.collider = 'static';
 
-    rightWall = new Sprite();
-	rightWall.x = 1800;
-	rightWall.w = 0;
-	rightWall.h = height;
-    // rightWall.color = 'pink';
-    rightWall.stroke = 'black';
-	rightWall.collider = 'static';
+    // rightWall = new Sprite();
+	// rightWall.x = 1800;
+	// rightWall.w = 0;
+	// rightWall.h = height;
+    // // rightWall.color = 'pink';
+    // rightWall.stroke = 'black';
+	// rightWall.collider = 'static';
 
 
     //creating joy ! 
     joy = new Sprite();
-    joy.x = 900;
-    joy.y = 100;
+    joy.x = width*6/8;
+    joy.y = height/2;
     joy.d=50;
     // joy.w=60;
     joy.w = 40;
     joy.h = 40;
-    joy.collider = 'dynamic';
+    joy.collider = 'k';
     joy.color = '#f7e688';
     joy.stroke = '#f7e688';
-    joy.text = '  joy';
+    // joy.text = '  joy';
     joy.textSize = 20;
     joy.speed = 0.01;
-    joy.bounciness = 1;
+    joy.bounciness = 0.1;
     joy.addCollider(3, 0, 40);
     joy.addCollider(8, 0, 40);
     // joy.addCollider(-20, 0, 40);
@@ -142,23 +143,39 @@ function initSimulation() {
 
     //setting up color based on location
     let colorLeft = color(245, 198, 201); // Pale pink
-    let colorRight = color(208, 234, 242); // Pale blue
- 
+    let colorRight = color(255,127,80); // coral
+    let colorRightEdge = color(0,0,0); // black
+
     // Reinitialize group
     circleGroup = new Group();
 
     // Create the center sprite and add to the group
-    const centerSprite = new circleGroup.Sprite(width / 2, height / 2, radius);
+    const centerSprite = new circleGroup.Sprite(100, height / 2, radius);
     centerSprite.draw = function() {
-        const lerpFactor = this.x / width;
+        const lerpFactor = this.x / (width*7/8);
+        const edgeLerp = (this.x-7/8) / (width*2/8);            // Interpolate color based on x position
         // Interpolate color based on x position
-        let finalColor = lerpColor(colorLeft, colorRight, lerpFactor);
-        fill(finalColor); // Conditional color based on position
+        if (this.x <= (width*7/8)) {
+            let finalColor = lerpColor(colorLeft, colorRight, lerpFactor);
+            fill(finalColor); // Conditional color based on position
+        } else {
+            let finalColor = lerpColor(colorRight,colorRightEdge,edgeLerp);
+            fill(finalColor); // Conditional color based on position
+    }
         noStroke();
-        ellipse(0, 0, this.diameter+(0.5*this.speed), this.diameter+(0.5*this.speed));
+        ellipse(0, 0, this.diameter+(this.speed), this.diameter+(this.speed));
+        // this.x = this.x + 1000;
+        // if (this.x = width-10) {
+        //   this.x = 100;
+        // }
     };
-    centerSprite.speed = 0.3;
+    // centerSprite.speed = 0.3;
+
+    //move on its own
+
     circleGroup.add(centerSprite);
+
+    //figure out convex hull
 
     // Calculate the angle between each sprite
     let angleIncrement = 360 / (numOfSprites - 1);
@@ -168,17 +185,35 @@ function initSimulation() {
     for (let i = 0; i < numOfSprites - 1; i++) {
         let angle = angleIncrement * i;
         let x = centerSprite.x + cos(angle) * radius;
-        let y = centerSprite.y + sin(angle) * radius;
+        let y = centerSprite.y + sin(angle+50) * radius;
         let edgeSprite = new circleGroup.Sprite(x, y, radius);
         edgeSprite.draw = function() {
-            const lerpFactor = this.x / width;
+            let colorLeft = color(245, 198, 201); // Pale pink
+            let colorRight = color(255,127,80); // coral        
+            let colorRightEdge = color(0,0,0); // black        
+            const lerpFactor = this.x / (width*7/8);
+            const edgeLerp = ((this.x-7/8)/width);            // Interpolate color based on x position
+            // const edgeLerp = this.x-8/8;            // Interpolate color based on x position
+
             // Interpolate color based on x position
-             let finalColor = lerpColor(colorLeft, colorRight, lerpFactor);
-            fill(finalColor); // Conditional color based on position
+            if (this.x <= (width*7/8)) {
+                let finalColor = lerpColor(colorLeft, colorRight, lerpFactor);
+                fill(finalColor);
+            } else {
+                let finalColor = lerpColor(colorRight,colorRightEdge,edgeLerp);
+                fill(finalColor); // Conditional color based on position
+            }
             noStroke();
-            ellipse(0, 0,this.diameter+(2*this.speed), this.diameter+(0.7*this.speed)); //adding blobbyness
-        // edgeSprite.bounciness=0.5; //unfriendly
+            // translate(-width/2,0)
+            ellipse(0, 0,this.diameter+(this.speed), this.diameter+(this.speed*2)); //adding blobbyness
+            // this.x = this.x +10;
+            // if (this.x > width) {
+            //   this.x = -width/2;
+            // }
+            // edgeSprite.bounciness=0.5; //unfriendly
         };
+        // edgeSprite.speed = 0.9;
+
         circleGroup.add(edgeSprite);
     }
 
@@ -187,6 +222,7 @@ function initSimulation() {
         let centerJoint = new DistanceJoint(centerSprite, circleGroup[i]);
         // centerJoint.springiness = springSlider.value(); // Use the springiness slider value
         centerJoint.springiness = 0.08; // 0 = rigid
+        // centerJoint.rotation = 10;
         centerJoint.draw = function() {
             // stroke(0, 255, 0);
             noStroke();
@@ -219,11 +255,14 @@ function initSimulation() {
     };
     joints.push(finalJoint);
 
-    if (kb.pressing('space')) {
-		edgeSprite.overlaps(centerSprite);
-		centerSprite.color = 'purple';
-	} //tried to allow overlaps didnt work
+    // if (kb.pressing('space')) {
+	// 	edgeSprite.overlaps(centerSprite);
+	// 	centerSprite.color = 'purple';
+	// } //tried to allow overlaps didnt work
 
+    if (kb.pressing('p')) {
+		centerSprite.x = centerSprite.x + 10;
+	} //tried to allow overlaps didnt work
 
 }
 
@@ -236,21 +275,31 @@ function draw() {
         refresh = false;
     }
 
-    //blinking old tv back drop
-    for (let i = 0; i < width * height * 5 / 100; i++) {
-        stroke(250, 250, 250, 40);
-        let px = random(width);
-        let py = random(height);
-        point(px, py);
-      }
+    // //blinking old tv back drop
+    // for (let i = 0; i < width * height * 5 / 100; i++) {
+    //     stroke(250, 250, 250, 40);
+    //     let px = random(width);
+    //     let py = random(height);
+    //     point(px, py);
+    //   }
     
+    stroke(255);
+    // line(width,0,width,height);
     //didnt work
     joy.draw();
 
     // Optional: Move the center sprite towards the mouse cursor
 
-    circleGroup[0].moveTowards(mouse, 0.07); // Assuming moveTowards is correctly implemented
-    // circleGroup[0].attractTo(mouseX, mouseY, 400, 50, 5000);
+    // circleGroup[0].moveTowards(mouse, 0.07); // Assuming moveTowards is correctly implemented
+
+    circleGroup[0].moveTowards(width*1.2,height/2, 0.03); // Assuming moveTowards is correctly implemented
+
+    // circleGroup[0].attractTo(width*1.5, height/2, 400);
+
+    if (circleGroup[0].x > width*1.2) {
+        // refresh = true;
+        circleGroup.x = 0;
+    }
         //attractTo function too slow
 
     // circleGroup.forEach(sprite => {
