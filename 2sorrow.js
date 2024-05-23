@@ -4,14 +4,14 @@ let circleGroup; // Changed from array to Group object
 let joints = [];
 let prevNumOfSprites = 0; // To track changes in number of sprites
 let floor, ceiling, leftWall, rightWall;
-let joy;
-let joyfulSprites;
+let sad;
+let sadSprites;
 let a;
 
-let joySound;
+let sadSound;
 
 function preload() {
-	joySound = loadSound("assets/bubble.wav");
+	sadSound = loadSound("assets/bubble.wav");
     //source: https://mixkit.co/free-sound-effects/bubbles/
 }
 
@@ -24,10 +24,10 @@ function changeSlider() {
 function setup() {
     createCanvas(1000, 200);
     angleMode(DEGREES);
-    world.gravity.y = 0;
+    world.gravity.y = world.x*100;
 
     // Setup UI elements
-    setupUI();
+    // setupUI();
 
     // Initialize simulation
     circleGroup = new Group(); // Initialize circleGroup as a Group
@@ -66,27 +66,36 @@ function setup() {
 	// rightWall.collider = 'static';
 
 
-    //creating joy ! 
-    joy = new Sprite();
-    joy.x = width*6/8;
-    joy.y = height/2;
-    joy.d=50;
-    // joy.w=60;
-    joy.w = 40;
-    joy.h = 40;
-    joy.collider = 'k';
-    joy.color = '#f7e688';
-    joy.stroke = '#f7e688';
-    // joy.text = '  joy';
-    joy.textSize = 20;
-    joy.speed = 0.01;
-    joy.bounciness = 0.1;
-    joy.addCollider(3, 0, 40);
-    joy.addCollider(8, 0, 40);
-    // joy.addCollider(-20, 0, 40);
+    //creating sorrow  
+    sad = new Sprite();
+    // joy.x = width*6/8;
+    // joy.y = height/2;
+    // joy.d=50;
+    // // joy.w=60;
+    // joy.w = 40;
+    // joy.h = 40;
+    // joy.collider = 'k';
+    // joy.color = '#f7e688';
+    // joy.stroke = '#f7e688';
+    // // joy.text = '  joy';
+    // joy.textSize = 20;
+    // joy.speed = 0.01;
+    // joy.bounciness = 0.1;
+    // joy.addCollider(3, 0, 40);
+    // joy.addCollider(8, 0, 40);
+    // // joy.addCollider(-20, 0, 40);
+
+    sad.x=width;
+    sad.y=height;
+    sad.d=height;
+    sad.color='#4974a5';
+    sad.stroke="#000000";
+    sad.collider = 'k';
+    sad.friction=4;
+    sad.bounciness=0;
 
     //calling poof interaction
-    circleGroup.overlaps(joy, poof);
+    circleGroup.overlaps(sad, poof);
 
 }
 
@@ -98,12 +107,12 @@ function setupUI() {
 
     // Simplified and organized UI setup
     createP('sprite population (8 to 100):').position(sliderX, sliderYStart);
-    numOfSpritesSlider = createSlider(8, 100, 20, 1);
+    numOfSpritesSlider = createSlider(8, 100, 100, 1);
     numOfSpritesSlider.position(sliderTextX, sliderYStart+20);
     numOfSpritesSlider.input(changeSlider); // Simplified event listener setup
 
     createP('sprite size (10 to 60):').position(sliderX, sliderYStart+60);
-    radiusSlider = createSlider(10, 60, 30, 5);
+    radiusSlider = createSlider(10, 60, 20, 5);
     radiusSlider.position(sliderTextX, sliderYStart+80);
     radiusSlider.input(changeSlider);
 
@@ -138,13 +147,16 @@ function initSimulation() {
     joints.forEach(j => j.remove()); // Remove all joints
     joints = [];
     
-    let numOfSprites = numOfSpritesSlider.value();
-    let radius = radiusSlider.value();
+    let numOfSprites = 100;
+    let radius = 20;
 
     //setting up color based on location
-    let colorLeft = color(245, 198, 201); // Pale pink
-    let colorRight = color(255,127,80); // coral
-    let colorRightEdge = color(0,0,0); // black
+    let colorLeft = color(255, 255, 255); // Pale pink
+    let colorRight = color(20,20,20); // coral
+    // let colorRightEdge = color(0,0,0); // black
+    let colorRightEdge = color('#4974a5'); // blue
+
+    
 
     // Reinitialize group
     circleGroup = new Group();
@@ -163,7 +175,9 @@ function initSimulation() {
             fill(finalColor); // Conditional color based on position
     }
         noStroke();
-        ellipse(0, 0, this.diameter+(this.speed), this.diameter+(this.speed));
+        // ellipse(0, 0, this.diameter+(this.speed), this.diameter+(this.speed));
+        ellipse(0, 0, this.diameter, this.diameter);
+
         // this.x = this.x + 1000;
         // if (this.x = width-10) {
         //   this.x = 100;
@@ -188,9 +202,11 @@ function initSimulation() {
         let y = centerSprite.y + sin(angle+50) * radius;
         let edgeSprite = new circleGroup.Sprite(x, y, radius);
         edgeSprite.draw = function() {
-            let colorLeft = color(245, 198, 201); // Pale pink
-            let colorRight = color(255,127,80); // coral        
-            let colorRightEdge = color(0,0,0); // black        
+            let colorLeft = color(255, 255, 255); // Pale pink
+            let colorRight = color(20,20,20); // coral        
+            // let colorRightEdge = color(0,0,0); // black        
+            let colorRightEdge = color('#4974a5'); // blue        
+
             const lerpFactor = this.x / (width*7/8);
             const edgeLerp = ((this.x-7/8)/width);            // Interpolate color based on x position
             // const edgeLerp = this.x-8/8;            // Interpolate color based on x position
@@ -205,7 +221,7 @@ function initSimulation() {
             }
             noStroke();
             // translate(-width/2,0)
-            ellipse(0, 0,this.diameter+(this.speed), this.diameter+(this.speed*2)); //adding blobbyness
+            ellipse(0, 0,this.diameter+(this.speed), this.diameter+(this.speed)); //adding blobbyness
             // this.x = this.x +10;
             // if (this.x > width) {
             //   this.x = -width/2;
@@ -221,7 +237,7 @@ function initSimulation() {
     for (let i = 1; i < circleGroup.length; i++) {
         let centerJoint = new DistanceJoint(centerSprite, circleGroup[i]);
         // centerJoint.springiness = springSlider.value(); // Use the springiness slider value
-        centerJoint.springiness = 0.08; // 0 = rigid
+        centerJoint.springiness = 0.12; // 0 = rigid
         // centerJoint.rotation = 10;
         centerJoint.draw = function() {
             // stroke(0, 255, 0);
@@ -274,6 +290,15 @@ function draw() {
         initSimulation(); // Reinitialize simulation if sliders change
         refresh = false;
     }
+    sad.x=width;
+    sad.y=height/1.5;
+    sad.d=sad.d*1.001;
+    sad.color='#4974a5';
+    sad.stroke="#000000";
+    sad.collider = 'k';
+    sad.friction=4;
+    sad.bounciness=20;
+
 
     // //blinking old tv back drop
     // for (let i = 0; i < width * height * 5 / 100; i++) {
@@ -286,17 +311,18 @@ function draw() {
     stroke(255);
     // line(width,0,width,height);
     //didnt work
-    joy.draw();
+    sad.draw();
 
     // Optional: Move the center sprite towards the mouse cursor
 
     // circleGroup[0].moveTowards(mouse, 0.07); // Assuming moveTowards is correctly implemented
-
-    circleGroup[0].moveTowards(width*1.2,height/2, 0.03); // Assuming moveTowards is correctly implemented
+    circleGroup[0].drag = 15;
+    circleGroup[0].moveTowards(sad.x,sad.y, 0.98); // Assuming moveTowards is correctly implemented
+    // circleGroup[12].moveTowards(sad.x*0.8,sad.y*1.5, 0.2); // Assuming moveTowards is correctly implemented
 
     // circleGroup[0].attractTo(width*1.5, height/2, 400);
 
-    if (circleGroup[0].x > width*1.2) {
+    if (circleGroup[0].x > width*1) {
         // refresh = true;
         circleGroup.x = 0;
     }
@@ -339,16 +365,17 @@ function draw() {
     }
 
 //poof
-function poof(circleGroup,joy) {
-    joyfulSprites = new Group();
-    joyfulSprites.draw();
-    joyfulSprites.x=circleGroup.x;
-    joyfulSprites.y=circleGroup.y;
-    joyfulSprites.diameter = 10;
-    joyfulSprites.amount = 1;
-    joyfulSprites.life = random(0,30);
-    joyfulSprites.color = "pink";
+function poof(circleGroup,sad) {
+    sadSprites = new Group();
+    sadSprites.draw();
+    sadSprites.x=circleGroup.x+20;
+    sadSprites.y=circleGroup.y+20;
+    sadSprites.diameter = 20;
+    sadSprites.amount = 1;
+    sadSprites.life = random(100,120);
+    sadSprites.color = "#4974a5";
+    // sadSprites.color = "#202020";
 
     //play bubble sound
-	joySound.play();
+	sadSound.play();
 }
