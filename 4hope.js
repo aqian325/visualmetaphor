@@ -4,14 +4,14 @@ let circleGroup; // Changed from array to Group object
 let joints = [];
 let prevNumOfSprites = 0; // To track changes in number of sprites
 let floor, ceiling, leftWall, rightWall;
-let fear;
-let fearfulSprites;
+let hope;
+let hopefulSprites;
 let a;
 
-let fearSound;
+let hopeSound;
 
 function preload() {
-	fearSound = loadSound("assets/bubble.wav");
+	hopeSound = loadSound("assets/bubble.wav");
     //source: https://mixkit.co/free-sound-effects/bubbles/
 }
 
@@ -69,37 +69,38 @@ function setup() {
 	rightWall.collider = 'static';
     rightWall.bounciness = 0.5;
 
-    //creating fear ! 
-    fear = new Sprite();
-    // fear.x = width*6/8;
-    // fear.y = height/2;
-    // fear.d=50;
-    // // fear.w=60;
-    // fear.w = 40;
-    // fear.h = 40;
-    // fear.collider = 's';
-    // fear.color = '#f7e688';
-    // fear.stroke = '#f7e688';
-    // // fear.text = '  fear';
-    // fear.textSize = 20;
-    // // fear.speed = 0.01;
-    // fear.bounciness = 20;
-    // fear.repelStrength = 3;
-    // fear.addCollider(3, 0, 40);
-    // fear.addCollider(8, 0, 40);
-    // fear.addCollider(-20, 0, 40);
+    //creating hope ! 
+    hope = new Sprite();
+    // hope.x = width*6/8;
+    // hope.y = height/2;
+    // hope.d=50;
+    // // hope.w=60;
+    // hope.w = 40;
+    // hope.h = 40;
+    // hope.collider = 's';
+    // hope.color = '#f7e688';
+    // hope.stroke = '#f7e688';
+    // // hope.text = '  hope';
+    // hope.textSize = 20;
+    // // hope.speed = 0.01;
+    // hope.bounciness = 20;
+    // hope.repelStrength = 3;
+    // hope.addCollider(3, 0, 40);
+    // hope.addCollider(8, 0, 40);
+    // hope.addCollider(-20, 0, 40);
 
-    fear.x=width;
-    fear.y=height/2;
-    fear.d=height*2*sin(random(0,360));
-    fear.color='#202020';
-    fear.stroke="#000000";
-    fear.collider = 'k';
+    hope.x=width;
+    hope.y=height/2;
+    hope.d=height*0.8*sin(random(0,180));
+    hope.color='#909090';
+    hope.stroke="#909090";
+    hope.addCollider(0, 0, hope.d+50);
+    hope.collider = 'k';
     // joy.friction=4;
-    fear.bounciness=20;
+    hope.bounciness=20;
 
     //calling eek interaction
-    circleGroup.overlaps(fear, eek);
+    circleGroup.overlaps(hope, eek);
 
 }
 
@@ -290,14 +291,14 @@ function draw() {
         refresh = false;
     }
 
-    fear.x=width;
-    fear.y=height/2;
-    fear.d=height*0.8*sin(random(0,180));
-    fear.color='#202020';
-    fear.stroke="#000000";
-    fear.collider = 'k';
+    hope.x=width;
+    hope.y=height/2;
+    hope.d=height*0.2*sin(random(0,180));
+    hope.color='#ffffff';
+    hope.stroke="#000000";
+    hope.collider = 'k';
     // joy.friction=4;
-    fear.bounciness=20;
+    hope.bounciness=0;
 
     // //blinking old tv back drop
     // for (let i = 0; i < width * height * 5 / 100; i++) {
@@ -307,10 +308,10 @@ function draw() {
     //     point(px, py);
     //   }
     
-    stroke(255);
+    // stroke(255);
     // line(width,0,width,height);
     //didnt work
-    fear.draw();
+    hope.draw();
 
     // Optional: Move the center sprite towards the mouse cursor
 
@@ -318,23 +319,6 @@ function draw() {
 
     circleGroup[0].moveTowards(width,height/2, 0.02); // Assuming moveTowards is correctly implemented
 
-    circleGroup[4].attractTo(0,height/2,1000);
-    circleGroup[8].attractTo(0,height/2,100);
-    circleGroup[12].attractTo(0,height/2,1000);
-    circleGroup[16].attractTo(0,height/2,100);
-    circleGroup[17].attractTo(0,height/2,1000);
-    circleGroup[18].attractTo(0,height/2,100);
-    circleGroup[19].attractTo(width/2,height/2,100);
-    circleGroup[20].attractTo(0,height/2,1000);
-
-    circleGroup[2].moveAway(fear.x,fear.y,0.1);
-    circleGroup[6].moveAway(fear.x,fear.y,0.1);
-    circleGroup[10].moveAway(fear.x,fear.y,0.1);
-    circleGroup[16].moveAway(fear.x,fear.y,0.1);
-    circleGroup[17].moveAway(fear.x,fear.y,0.1);
-    circleGroup[18].moveAway(fear.x,fear.y,0.1);
-    circleGroup[19].moveAway(fear.x,fear.y,0.1);
-    circleGroup[20].moveAway(fear.x,fear.y,0.1);
 
     // circleGroup[0].attractTo(width*1.5, height/2, 400);
 
@@ -343,7 +327,7 @@ function draw() {
         circleGroup.x = 0;
     }
 
-    // circleGroup.repelFrom = fear;
+    // circleGroup.repelFrom = hope;
 
         //attractTo function too slow
 
@@ -384,18 +368,18 @@ function draw() {
     }
 
 //eek
-function eek(circleGroup,fear) {
-    newColor = (255,0,0,0);
-    fearfulSprites = new Group();
-    fearfulSprites.draw();
-    fearfulSprites.x=circleGroup.x+random(-5,5);
-    fearfulSprites.y=circleGroup.y+random(-5,5);
-    fearfulSprites.diameter = 15;
-    fearfulSprites.amount = 1;
-    fearfulSprites.life = random(1000,10000);
-    fearfulSprites.color = newColor;
-    fearfulSprites.repelStrength = 1;
-    fearfulSprites.rotation = 100;
+function eek(circleGroup,hope) {
+    newColor = (255,255,255,0);
+    hopefulSprites = new Group();
+    hopefulSprites.draw();
+    hopefulSprites.x=circleGroup.x+random(-5,5);
+    hopefulSprites.y=circleGroup.y+random(-5,5);
+    hopefulSprites.diameter = 15;
+    hopefulSprites.amount = 1;
+    hopefulSprites.life = random(1000,10000);
+    hopefulSprites.color = newColor;
+    // hopefulSprites.repelStrength = 1;
+    // hopefulSprites.rotation = 100;
 
     //play bubble sound
 	// joySound.play();
